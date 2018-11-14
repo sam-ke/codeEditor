@@ -10,7 +10,12 @@ class Leb_plugin_codeEditor_ce{
 
     public function __construct()
     {
-        !defined("_ROOT_") && define("_ROOT_", $_SERVER['DOCUMENT_ROOT']);
+        $root = trim($_SERVER['DOCUMENT_ROOT']);
+        if(strpos(PHP_OS, 'WIN') !== false){
+            $root = str_replace('/', '\\', $root);
+        }
+
+        !defined("_ROOT_") && define("_ROOT_", $root);
     }
 
     /**
@@ -26,21 +31,20 @@ class Leb_plugin_codeEditor_ce{
             throw new Exception('调用方式有误');
         }
 
-
         if(strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
             $result = '';
 
             $codeStr = join("\n", $_POST['code']);
             $codeStr = preg_replace('/(<\?php)|(\?>)/', '', $codeStr);
 
-            setcookie('runcode', $codeStr, time() + 3600 * 24 * 30, '/', get_domain($_SERVER['HTTP_HOST']));
+            setcookie('runcode', $codeStr, time() + 3600 * 24 * 30, '/', $this->_getDomain($_SERVER['HTTP_HOST']));
 
             $result = $this->_generateResult($codeStr);
             echo $result;exit;
         }else {
-            $dir_prefix = DIRECTORY_SEPARATOR.str_replace(_ROOT_, '', dirname(__FILE__));
+            $dir_prefix = DIRECTORY_SEPARATOR.trim(str_replace(_ROOT_, '', dirname(__FILE__)), DIRECTORY_SEPARATOR);
 
-            $defaultCode = $_COOKIE['runcode'];
+            $defaultCode = $_COOKIE['runcode'] ?? '';
 
             require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'editor.php');
         }
@@ -66,6 +70,30 @@ class Leb_plugin_codeEditor_ce{
 
         $result = str_replace("\n", '<br/>', $result);
         return $result;
+    }
+
+     //获取根域名
+    private function _getDomain($url)
+    {
+        if(substr($url, 0, 4) == 'http') {
+            $rs = parse_url($url);
+            $host = $rs['host'];
+        }elseif($index = strpos($url, '/')) {
+            $host = substr($url, 0, $index);
+        }else{
+            $host = $url;
+        }
+        $arr = explode('.', $host);
+        $last = array_pop($arr);
+        $map = array('com','net','org','gov','cc','biz','info');
+        $last2 = array_pop($arr);
+        if(in_array($last2, $map)) {
+            $last3 = array_pop($arr);
+            $domain = $last3.'.'.$last2.'.'.$last;
+        }else{
+            $domain = $last2.'.'.$last;
+        }
+        return $domain;
     }
 }
 ?>

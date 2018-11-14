@@ -105,7 +105,7 @@ echo htmlspecialchars("<?php".$defaultCode."\r?>");
             
             <script>
                 var timer = '';
-                var url = '<?php echo $uri.$queryString; ?>';
+                var url = '';
                 var _DATA_ = '';
                 $('.run').click(function () {
                     var code = myGetCode();
