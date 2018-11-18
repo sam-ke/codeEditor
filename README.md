@@ -22,7 +22,7 @@ https://github.com/ajaxorg/ace-builds/tree/master/src-min-noconflict
     {
         if($token = $_REQUEST['_token'] == 'sdkfdaaafnJHUqoa'){
         
-                //如果是非，自动加载，您需要自行require 类库文件ce.php
+                //如果是非自动加载，您需要自行require 类库文件ce.php
                 $ce = new Leb_plugin_codeEditor_ce();
                 $ce->show();
             }else{
