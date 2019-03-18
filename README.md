@@ -24,6 +24,9 @@ https://github.com/ajaxorg/ace-builds/tree/master/src-min-noconflict
         if($token = $_REQUEST['_token'] == 'sdkfdaaafnJHUqoa'){
         
                 //如果是非自动加载，您需要自行require 类库文件ce.php
+                //require_once(dirname(__FILE__).'/../../path_to_your_folder/codeEditor/ce.php');
+                //note: 必须clone codeEditor 项目到可访问的目录，即 入口文件index.php 同级目录； 或 css、js 等静态资源所处在的目录，
+                // 否则渲染页面时，会引起找不到资源的错误
                 $ce = new Leb_plugin_codeEditor_ce();
                 $ce->show();
             }else{
